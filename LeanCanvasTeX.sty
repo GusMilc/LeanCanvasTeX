@@ -1,0 +1,121 @@
+% LeanCanvasTeX.sty
+\ProvidesPackage{LeanCanvasTeX}
+\usepackage{keyval}
+
+% ======================= \setters ========================
+
+\newcommand{\setLCProblem}[1]{
+    \def\printLCProblem{Problem: #1}
+}
+
+\newcommand{\setLCExistingAlternatives}[1]{
+    \def\printLCExistingAlternatives{Existing Alternatives: #1}
+}
+
+\newcommand{\setLCSolution}[1]{
+    \def\printLCSolution{Solution: #1}
+}
+
+\newcommand{\setLCKeyMetrics}[1]{
+    \def\printLCKeyMetrics{Key Metrics: #1}
+}
+
+\newcommand{\setLCUniqueValueProposition}[1]{
+    \def\printLCUniqueValueProposition{Unique Value Proposition: #1}
+}
+
+\newcommand{\setLCHighlevelConcept}[1]{
+    \def\printLCHighlevelConcept{High-level Concept: #1}
+}
+
+\newcommand{\setLCUnfairAdvantage}[1]{
+    \def\printLCUnfairAdvantage{Unfair Advantage: #1}
+}
+
+\newcommand{\setLCChannels}[1]{
+    \def\printLCChannels{Channels: #1}
+}
+
+\newcommand{\setLCCustomerSegments}[1]{
+    \def\printLCCustomerSegments{Customer Segments: #1}
+}
+
+\newcommand{\setLCEarlyAdopters}[1]{
+    \def\printLCEarlyAdopters{Early Adopters: #1}
+}
+
+\newcommand{\setLCCostStructure}[1]{
+    \def\printLCCostStructure{Cost Structure: #1}
+}
+
+\newcommand{\setLCRevenueStreams}[1]{
+    \def\printLCRevenueStream{Revenue Stream: #1}
+}
+
+% =========================================================
+
+\newcommand{\printLeanCanvas}[1]{
+    \printLCProblem \\
+    \printLCExistingAlternatives \\
+    \printLCSolution \\
+    \printLCKeyMetrics \\
+    \printLCUniqueValueProposition \\
+    \printLCHighlevelConcept \\
+    \printLCUnfairAdvantage \\
+    \printLCChannels \\
+    \printLCCustomerSegments \\
+    \printLCEarlyAdopters \\
+    \printLCCostStructure \\
+    \printLCRevenueStream \\
+}
+
+% ==================== \LeanCanvasTeX =====================
+\makeatletter
+\define@key{mykeys}{problem}{\def\myCommand@problem{#1}}  
+\define@key{mykeys}{existing alternatives}{\def\myCommand@existingAlternatives{#1}} 
+\define@key{mykeys}{solution}{\def\myCommand@solution{#1}} 
+\define@key{mykeys}{key metrics}{\def\myCommand@keyMetrics{#1}} 
+\define@key{mykeys}{unique value proposition}{\def\myCommand@uniqueValueProposition{#1}} 
+\define@key{mykeys}{high-level concept}{\def\myCommand@highlevelConcept{#1}} 
+\define@key{mykeys}{unfair advantage}{\def\myCommand@unfairAdvantage{#1}} 
+\define@key{mykeys}{channels}{\def\myCommand@channels{#1}} 
+\define@key{mykeys}{customer segments}{\def\myCommand@customerSegments{#1}} 
+\define@key{mykeys}{early adopters}{\def\myCommand@earlyAdopters{#1}} 
+\define@key{mykeys}{cost structure}{\def\myCommand@costStructure{#1}} 
+\define@key{mykeys}{revenue streams}{\def\myCommand@revenueStreams{#1}} 
+\newcommand{\LeanCanvasTeX}[1]{
+  \setkeys{mykeys}{
+        problem = ,
+        existing alternatives = ,
+        solution = ,
+        key metrics = ,
+        unique value proposition = ,
+        high-level concept = ,
+        unfair advantage = ,
+        channels = ,
+        customer segments = ,
+        early adopters = ,
+        cost structure = ,
+        revenue streams = 
+        #1
+    }          
+                                                        
+  \setLCProblem{\myCommand@problem}    
+  \setLCExistingAlternatives{\myCommand@existingAlternatives}
+  \setLCSolution{\myCommand@solution}
+  \setLCKeyMetrics{\myCommand@keyMetrics}
+  \setLCUniqueValueProposition{\myCommand@uniqueValueProposition}
+  \setLCHighlevelConcept{\myCommand@highlevelConcept}
+  \setLCUnfairAdvantage{\myCommand@unfairAdvantage}
+  \setLCChannels{\myCommand@channels}
+  \setLCCustomerSegments{\myCommand@customerSegments}
+  \setLCEarlyAdopters{\myCommand@earlyAdopters}
+  \setLCCostStructure{\myCommand@costStructure}
+  \setLCRevenueStreams{\myCommand@revenueStreams}                   
+                                                        
+  \printLeanCanvas                                         
+}                                                          
+\makeatother                                               
+% =========================================================
+
+\endinput
