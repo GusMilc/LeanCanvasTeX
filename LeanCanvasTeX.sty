@@ -1,90 +1,244 @@
 % LeanCanvasTeX.sty
 \ProvidesPackage{LeanCanvasTeX}
 \usepackage{keyval}
+\usepackage{tikz}
 
+% =======================  defs   ========================
+
+\def\leanWidth{4cm}
+\def\leanSquareH{5cm}
+\def\leanOffestX{1cm}
+\def\leanOffestY{0}
+
+\def\nodeInnerSep{\leanWidth/50}
+\def\nodeInnerSepCustos{\nodeInnerSep}
+\def\solucaoH{\dimexpr(\problemaH + \alternativaH)/2\relax}
+\def\metricasH{\solucaoH}
+\def\custosH{\solucaoH}
+
+\def\custosCalc{\dimexpr\leanWidth*2 + \leanWidth/2 + \nodeInnerSep*3 +\nodeInnerSep/5 \relax}
+
+\def\custosW{\the\custosCalc}
+
+% =======================   nodes  ========================
+\makeatletter
+\define@key{nodeKeys}{id}{\def\lcNode@id{#1}}
+\define@key{nodeKeys}{position}{\def\lcNode@position{#1}}
+\define@key{nodeKeys}{title}{\def\lcNode@title{#1}}
+\define@key{nodeKeys}{content}{\def\lcNode@content{#1}}
+\define@key{nodeKeys}{padding}{\def\lcNode@padding{#1}}
+\define@key{nodeKeys}{width}{\def\lcNode@width{#1}}
+\define@key{nodeKeys}{titleHeight}{\def\lcNode@titleHeight{#1}}
+\define@key{nodeKeys}{titleAnchor}{\def\lcNode@titleAnchor{#1}}
+\define@key{nodeKeys}{contentHeight}{\def\lcNode@contentHeight{#1}}
+\define@key{nodeKeys}{contentAnchor}{\def\lcNode@contentAnchor{#1}}
+\newcommand{\lcNode}[1]{
+    \setkeys{nodeKeys}{
+        id = lcId,
+        position = current page.north west,
+        title = Title,
+        content = Content,
+        padding = \nodeInnerSep,
+        width = \leanWidth,
+        titleHeight = 1cm,
+        titleAnchor = north west,
+        contentHeight = \leanSquareH,
+        contentAnchor = north,
+        #1
+    }
+    \setkeys{nodeKeys}{#1}
+
+    %title
+    \node[
+        inner sep=\lcNode@padding,
+        text width=\lcNode@width,
+        minimum height=\lcNode@titleHeight,
+        minimum width=\lcNode@width,
+        anchor=\lcNode@titleAnchor
+    ] (\lcNode@id_title) at(\lcNode@position) {
+        \underline{\lcNode@title}
+    };
+
+    %content
+    \node[
+        inner sep=\nodeInnerSep,
+        text width=\lcNode@width,
+        minimum height=\lcNode@contentHeight,
+        anchor=\lcNode@contentAnchor
+    ] (\lcNode@id_content) at (\lcNode@id_title.south) {
+        \parbox[c][\lcNode@contentHeight][c]{\lcNode@width}{
+            {\lcNode@content}
+        }
+    };
+}
+
+
+\makeatother
 % ======================= \setters ========================
 
 \newcommand{\setLCProblem}[1]{
-    \def\printLCProblem{Problem: #1}
+    \def\printLCProblem{#1}
 }
 
 \newcommand{\setLCExistingAlternatives}[1]{
-    \def\printLCExistingAlternatives{Existing Alternatives: #1}
+    \def\printLCExistingAlternatives{#1}
 }
 
 \newcommand{\setLCSolution}[1]{
-    \def\printLCSolution{Solution: #1}
+    \def\printLCSolution{#1}
 }
 
 \newcommand{\setLCKeyMetrics}[1]{
-    \def\printLCKeyMetrics{Key Metrics: #1}
+    \def\printLCKeyMetrics{#1}
 }
 
 \newcommand{\setLCUniqueValueProposition}[1]{
-    \def\printLCUniqueValueProposition{Unique Value Proposition: #1}
+    \def\printLCUniqueValueProposition{#1}
 }
 
 \newcommand{\setLCHighlevelConcept}[1]{
-    \def\printLCHighlevelConcept{High-level Concept: #1}
+    \def\printLCHighlevelConcept{#1}
 }
 
 \newcommand{\setLCUnfairAdvantage}[1]{
-    \def\printLCUnfairAdvantage{Unfair Advantage: #1}
+    \def\printLCUnfairAdvantage{#1}
 }
 
 \newcommand{\setLCChannels}[1]{
-    \def\printLCChannels{Channels: #1}
+    \def\printLCChannels{#1}
 }
 
 \newcommand{\setLCCustomerSegments}[1]{
-    \def\printLCCustomerSegments{Customer Segments: #1}
+    \def\printLCCustomerSegments{#1}
 }
 
 \newcommand{\setLCEarlyAdopters}[1]{
-    \def\printLCEarlyAdopters{Early Adopters: #1}
+    \def\printLCEarlyAdopters{#1}
 }
 
 \newcommand{\setLCCostStructure}[1]{
-    \def\printLCCostStructure{Cost Structure: #1}
+    \def\printLCCostStructure{#1}
 }
 
 \newcommand{\setLCRevenueStreams}[1]{
-    \def\printLCRevenueStream{Revenue Stream: #1}
+    \def\printLCRevenueStreams{#1}
 }
 
 % =========================================================
 
-\newcommand{\printLeanCanvas}[1]{
-    \printLCProblem \\
-    \printLCExistingAlternatives \\
-    \printLCSolution \\
-    \printLCKeyMetrics \\
-    \printLCUniqueValueProposition \\
-    \printLCHighlevelConcept \\
-    \printLCUnfairAdvantage \\
-    \printLCChannels \\
-    \printLCCustomerSegments \\
-    \printLCEarlyAdopters \\
-    \printLCCostStructure \\
-    \printLCRevenueStream \\
-}
+\newcommand{\printLeanCanvas}{
+\begin{tikzpicture}[remember picture,overlay]
+        \lcNode{
+            title = Problem,
+            content = \printLCProblem,
+            id = problem_id
+        }
+        \lcNode{
+            title = Existing Alternatives,
+            content = \printLCExistingAlternatives,
+            position = problem_id_content.south west,
+            id = existing_alternatives_id
+        }
+        \draw (problem_id_title.north east) -- (existing_alternatives_id_content.south east);
+        \lcNode{
+            title = Solution,
+            content = \printLCSolution,
+            id = solution_id,
+            position = problem_id_title.north east,
+        }
+        \lcNode{
+            title = Key Metrics,
+            content = \printLCKeyMetrics,
+            id = key_metrics_id,
+            position = solution_id_content.south west,
+        }
+        \draw (key_metrics_id_title.north west) -- (key_metrics_id_title.north east);
+        \draw (solution_id_title.north east) -- (key_metrics_id_content.south east);
 
+        \lcNode{
+            title = Unique Value Propostion,
+            content = \printLCUnfairAdvantage,
+            id = unique_value_id,
+            position = solution_id_title.north east,
+        }
+        \lcNode{
+            title = High Level Concept,
+            content = \printLCHighlevelConcept,
+            id = high_level_id,
+            position = unique_value_id_content.south west,
+        }
+
+        \draw (unique_value_id_title.north east) -- (high_level_id_content.south east);
+         \lcNode{
+            title = Unfair Advantage,
+            content = \printLCUnfairAdvantage,
+            id = advantage_id,
+            position =unique_value_id_title.north east,
+        }
+        \lcNode{
+            title = Channels,
+            content = \printLCChannels,
+            id = channels_id,
+            position = advantage_id_content.south west,
+        }
+        \draw (channels_id_title.north west) -- (channels_id_title.north east);
+        \draw (advantage_id_title.north east) -- (channels_id_content.south east);
+
+        \lcNode{
+            title = Customer Segments,
+            content = \printLCCustomerSegments,
+            id = customer_id,
+            position = advantage_id_title.north east,
+        }
+        \lcNode{
+            title = Early Adopters,
+            content = \printLCEarlyAdopters,
+            id = adopters_id,
+            position = customer_id_content.south west,
+        }
+
+        \draw (existing_alternatives_id_content.south west) -- (adopters_id_content.south east);
+
+        \lcNode{
+            title = Cost Structure,
+            content = \printLCCostStructure,
+            id = cost_id,
+            position = existing_alternatives_id_content.south west,
+            width = \custosW
+        }
+
+        \draw (cost_id_title.north east) -- (cost_id_content.south east);
+
+        \lcNode{
+            title = Revenue Streams,
+            content = \printLCRevenueStreams,
+            id = revenue_id,
+            position = cost_id_title.north east,
+            width = \custosW
+        }
+
+        \draw (problem_id_title.north west) -- (cost_id_content.south west);
+        \draw (cost_id_content.south west) -- (revenue_id_content.south east);
+        \draw (revenue_id_content.south east) -- (customer_id_title.north east);
+        \draw (customer_id_title.north east) -- (problem_id_title.north west);
+\end{tikzpicture}
+}
 % ==================== \LeanCanvasTeX =====================
 \makeatletter
-\define@key{mykeys}{problem}{\def\myCommand@problem{#1}}  
-\define@key{mykeys}{existing alternatives}{\def\myCommand@existingAlternatives{#1}} 
-\define@key{mykeys}{solution}{\def\myCommand@solution{#1}} 
-\define@key{mykeys}{key metrics}{\def\myCommand@keyMetrics{#1}} 
-\define@key{mykeys}{unique value proposition}{\def\myCommand@uniqueValueProposition{#1}} 
-\define@key{mykeys}{high-level concept}{\def\myCommand@highlevelConcept{#1}} 
-\define@key{mykeys}{unfair advantage}{\def\myCommand@unfairAdvantage{#1}} 
-\define@key{mykeys}{channels}{\def\myCommand@channels{#1}} 
-\define@key{mykeys}{customer segments}{\def\myCommand@customerSegments{#1}} 
-\define@key{mykeys}{early adopters}{\def\myCommand@earlyAdopters{#1}} 
-\define@key{mykeys}{cost structure}{\def\myCommand@costStructure{#1}} 
-\define@key{mykeys}{revenue streams}{\def\myCommand@revenueStreams{#1}} 
+\define@key{mykeys}{problem}{\def\LeanCanvasTeX@problem{#1}}
+\define@key{mykeys}{existing alternatives}{\def\LeanCanvasTeX@existingAlternatives{#1}}
+\define@key{mykeys}{solution}{\def\LeanCanvasTeX@solution{#1}}
+\define@key{mykeys}{key metrics}{\def\LeanCanvasTeX@keyMetrics{#1}}
+\define@key{mykeys}{unique value proposition}{\def\LeanCanvasTeX@uniqueValueProposition{#1}}
+\define@key{mykeys}{high-level concept}{\def\LeanCanvasTeX@highlevelConcept{#1}}
+\define@key{mykeys}{unfair advantage}{\def\LeanCanvasTeX@unfairAdvantage{#1}}
+\define@key{mykeys}{channels}{\def\LeanCanvasTeX@channels{#1}}
+\define@key{mykeys}{customer segments}{\def\LeanCanvasTeX@customerSegments{#1}}
+\define@key{mykeys}{early adopters}{\def\LeanCanvasTeX@earlyAdopters{#1}}
+\define@key{mykeys}{cost structure}{\def\LeanCanvasTeX@costStructure{#1}}
+\define@key{mykeys}{revenue streams}{\def\LeanCanvasTeX@revenueStreams{#1}}
 \newcommand{\LeanCanvasTeX}[1]{
-  \setkeys{mykeys}{
+    \setkeys{mykeys}{
         problem = ,
         existing alternatives = ,
         solution = ,
@@ -96,26 +250,27 @@
         customer segments = ,
         early adopters = ,
         cost structure = ,
-        revenue streams = 
+        revenue streams = ,
         #1
-    }          
-                                                        
-  \setLCProblem{\myCommand@problem}    
-  \setLCExistingAlternatives{\myCommand@existingAlternatives}
-  \setLCSolution{\myCommand@solution}
-  \setLCKeyMetrics{\myCommand@keyMetrics}
-  \setLCUniqueValueProposition{\myCommand@uniqueValueProposition}
-  \setLCHighlevelConcept{\myCommand@highlevelConcept}
-  \setLCUnfairAdvantage{\myCommand@unfairAdvantage}
-  \setLCChannels{\myCommand@channels}
-  \setLCCustomerSegments{\myCommand@customerSegments}
-  \setLCEarlyAdopters{\myCommand@earlyAdopters}
-  \setLCCostStructure{\myCommand@costStructure}
-  \setLCRevenueStreams{\myCommand@revenueStreams}                   
-                                                        
-  \printLeanCanvas                                         
-}                                                          
-\makeatother                                               
-% =========================================================
+    }
 
+    \setkeys{mykeys}{#1}
+
+    \setLCProblem{\LeanCanvasTeX@problem}
+    \setLCExistingAlternatives{\LeanCanvasTeX@existingAlternatives}
+    \setLCSolution{\LeanCanvasTeX@solution}
+    \setLCKeyMetrics{\LeanCanvasTeX@keyMetrics}
+    \setLCUniqueValueProposition{\LeanCanvasTeX@uniqueValueProposition}
+    \setLCHighlevelConcept{\LeanCanvasTeX@highlevelConcept}
+    \setLCUnfairAdvantage{\LeanCanvasTeX@unfairAdvantage}
+    \setLCChannels{\LeanCanvasTeX@channels}
+    \setLCCustomerSegments{\LeanCanvasTeX@customerSegments}
+    \setLCEarlyAdopters{\LeanCanvasTeX@earlyAdopters}
+    \setLCCostStructure{\LeanCanvasTeX@costStructure}
+    \setLCRevenueStreams{\LeanCanvasTeX@revenueStreams}
+
+    \printLeanCanvas
+}
+\makeatother
+% ==========================================================
 \endinput
